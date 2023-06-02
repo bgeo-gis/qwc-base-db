@@ -22,21 +22,19 @@ FROM postgres:13
 ENV DEBIAN_FRONTEND=noninteractive
 
 ARG PG_MAJOR=13
-ARG POSTGIS_VERSION=3
 
 ARG GIT_REPO=https://github.com/qwc-services/qwc-config-db.git
 
 ENV PGSERVICEFILE=/tmp/.pg_service.conf
 
-COPY install-postgis.sh install-alembic-and-clone-qwc-config-db.sh /usr/local/bin/
+COPY install-alembic-and-clone-qwc-config-db.sh /usr/local/bin/
 RUN  cd /usr/local/bin && \
-     chmod +x install-postgis.sh install-alembic-and-clone-qwc-config-db.sh
+     chmod +x install-alembic-and-clone-qwc-config-db.sh
 
 RUN \
     export PATH=/usr/local/bin:/usr/bin:/bin && \
     apt-get update && \
     apt-get upgrade -y && \
-    /usr/local/bin/install-postgis.sh $PG_MAJOR $POSTGIS_VERSION && \
     /usr/local/bin/install-alembic-and-clone-qwc-config-db.sh $GIT_REPO && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -44,6 +42,7 @@ RUN \
 #RUN localedef -i de_CH -c -f UTF-8 -A /usr/share/locale/locale.alias de_CH.UTF-8
 #ENV LANG de_CH.utf8
 
+COPY pg_service.conf /tmp/.pg_service.conf
 
 # setup database
 # script to create DB, roles, grants etc
