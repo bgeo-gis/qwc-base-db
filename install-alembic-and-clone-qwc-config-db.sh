@@ -20,6 +20,6 @@ apt-get install -y ca-certificates tmux screen curl less \
 # get qwc-config-db for migrations
 cd /tmp/ && git clone $QWC_CONFIG_DB_GIT_REPO qwc-config-db
 cd /tmp/qwc-config-db/ && git pull
-pip3 install --upgrade pip
-pip3 install --no-cache-dir -r /tmp/qwc-config-db/requirements.txt
+pip3 install --upgrade pip --break-system-packages
+pip3 install --no-cache-dir -r /tmp/qwc-config-db/requirements.txt --break-system-packages
 
