@@ -18,6 +18,7 @@
 # See the `run-migrations.sh`.
 
 FROM postgres:13
+# FROM postgres:13.10
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -27,20 +28,25 @@ ARG GIT_REPO=https://github.com/qwc-services/qwc-config-db.git
 
 ENV PGSERVICEFILE=/tmp/.pg_service.conf
 
+RUN \
+    export PATH=/usr/local/bin:/usr/bin:/bin && \
+    apt-get update && \
+    apt-get upgrade -y
+
 COPY install-alembic-and-clone-qwc-config-db.sh /usr/local/bin/
 RUN  cd /usr/local/bin && \
      chmod +x install-alembic-and-clone-qwc-config-db.sh
 
 RUN \
-    export PATH=/usr/local/bin:/usr/bin:/bin && \
-    apt-get update && \
-    apt-get upgrade -y && \
     /usr/local/bin/install-alembic-and-clone-qwc-config-db.sh $GIT_REPO && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 #RUN localedef -i de_CH -c -f UTF-8 -A /usr/share/locale/locale.alias de_CH.UTF-8
 #ENV LANG de_CH.utf8
+
+RUN echo en_US.UTF-8 UTF-8 > /etc/locale.gen
+RUN locale-gen en_US.UTF-8
 
 COPY pg_service.conf /tmp/.pg_service.conf
 
